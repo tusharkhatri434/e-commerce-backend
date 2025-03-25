@@ -16,9 +16,17 @@ const productSchema = new mongoose.Schema({
     description:String,
     price:Number,
     image:[String],
-    category:{type:String,required:true},
-    subCategory: {type:String},
-    bestseller:Boolean
+    category:{
+        type:String
+    },
+    subCategory: {
+        type:String 
+    },
+    sizes: [{
+        type: String,
+        enum: ['S', 'M', 'L', 'XL', 'XXL']}],
+    date:{type:Date},
+    bestseller:{type:Boolean}
 });
 
 const Product = mongoose.model('Product',productSchema);
