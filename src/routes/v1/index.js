@@ -20,7 +20,7 @@ async function genrateToken(name,email){
 
 router.get('/',async (req,res)=>{
     try {
-       res.send("running");
+       res.send("Router running");
        res.end();
     } catch (error) {
         console.log(error)
