@@ -14,6 +14,11 @@ const UserSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    role:{
+     type:String,
+     enum:["admin","user"],
+     default:"user"
+    },
     orders : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }]
 },{
     timestamps:true

@@ -8,10 +8,9 @@ const private_key = 'sshhh';
 
 const router = express.Router();
 
-async function genrateToken(name,email){
+function genrateToken(name,email){
   try {
     const token = jwt.sign({name,email},private_key);
-    console.log(token);
     return token;
   } catch (error) {
       console.log(error);
@@ -32,11 +31,13 @@ router.post('/login',async (req,res)=>{
    try {
      const {email,password} = req.body;
      const user = await User.findOne({email});
-     const compare = await bcrypt.compare(password,user?.password)
-     if(compare){
-        const response = await genrateToken(user.name,email);
-        res.status(200).json({token:response,success:'true'});
-    }
+     const compare = await bcrypt.compare(password,user.password);
+     if(!compare){
+        console.log(compare);
+         return res.status(401).json({data:{},success:false,msg:'Invalid credentials'});
+     }
+        const response =  genrateToken(user.name,email);
+        res.status(200).json({data:{name:user.name,email},token:response,success:'true'});
    } catch (error) {
        console.log(error);
    }
@@ -47,11 +48,17 @@ router.post('/signup',async (req,res)=>{
 
     const {name,email,password} = req.body;
     try {
+        const isUserExist = await User.findOne({email});
+        if(isUserExist){
+          return res.status(201).json({data:{},msg:"user exist with this email id",success:false});
+        }
         const hash = await bcrypt.hash(password,10);
         const newUser = new User({name,email,password:hash});
         newUser.save();
-        // console.log(newUser);
-        res.status(201).json({success:"true"});
+        
+        const token = genrateToken(newUser.name,newUser.email);
+
+       return res.status(201).json({data:{name,email},token,success:"true"});
     } catch (error) {
         console.log(error);
     }
@@ -81,7 +88,32 @@ router.get('/product/:id',async (req,res)=>{
 });
 
 
+router.get('/products/bestseller',async(req,res)=>{
+    try {
+        const data = await Product.find({bestseller:true});
+         res.status(200).json({data,success:true});
+    } catch (error) {
+        
+    }
+})
 
+router.post('/product/upload',async (req,res)=>{
 
+})
 
 module.exports = router;
+
+
+// {
+//     "_id": "67df8d863ca88e40a01cd963",
+//     "name": "Men Round Neck Pure Cotton T-shirt",
+//     "description": "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
+//     "price": 120,
+//     "image": [],
+//     "category": "Men",
+//     "subCategory": "Topwear",
+//     "sizes": [],
+//     "date": "2024-05-25T07:49:05.448Z",
+//     "bestseller": false,
+//     "__v": 0
+//     },
