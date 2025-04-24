@@ -3,19 +3,15 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../../models/User');
 const Product = require('../../models/Product');
-const insertBulk = require('../../utils/products');
 const private_key = 'sshhh';
 
-const router = express.Router();
+const {login,signUp} = require('../../controllers/authController');
+const { getAllProducts, getProductByID, bestSeller } = require('../../controllers/productController');
+const {placeOrder,getUserOrders} = require('../../controllers/orderController');
+const { addToCart, fetchCart, deletefromCart } = require('../../controllers/cartController');
 
-function genrateToken(name,email){
-  try {
-    const token = jwt.sign({name,email},private_key);
-    return token;
-  } catch (error) {
-      console.log(error);
-    }
-}
+
+const router = express.Router();
 
 router.get('/',async (req,res)=>{
     try {
@@ -27,79 +23,28 @@ router.get('/',async (req,res)=>{
 })
 
 // Post - v1/api/login
-router.post('/login',async (req,res)=>{
-   try {
-     const {email,password} = req.body;
-     const user = await User.findOne({email});
-     const compare = await bcrypt.compare(password,user.password);
-     if(!compare){
-        console.log(compare);
-         return res.status(401).json({data:{},success:false,msg:'Invalid credentials'});
-     }
-        const response =  genrateToken(user.name,email);
-        res.status(200).json({data:{name:user.name,email},token:response,success:'true'});
-   } catch (error) {
-       console.log(error);
-   }
-});
+router.post('/login',login);
 
-// Post - v1/api/signup
-router.post('/signup',async (req,res)=>{
-
-    const {name,email,password} = req.body;
-    try {
-        const isUserExist = await User.findOne({email});
-        if(isUserExist){
-          return res.status(201).json({data:{},msg:"user exist with this email id",success:false});
-        }
-        const hash = await bcrypt.hash(password,10);
-        const newUser = new User({name,email,password:hash});
-        newUser.save();
-        
-        const token = genrateToken(newUser.name,newUser.email);
-
-       return res.status(201).json({data:{name,email},token,success:"true"});
-    } catch (error) {
-        console.log(error);
-    }
-});
-
-
+// Post - v1/api/signup 
+router.post('/signup',signUp);
 
 // Products routes -c
-router.get('/products',async (req,res)=>{
-   try{ 
-      const productsData = await Product.find();
-      res.status(200).json({data:productsData,success:true});
-   }catch(error){
-     res.json({err:error});
-   }
-})
+router.get('/products',getAllProducts);
 
-router.get('/product/:id',async (req,res)=>{
-    try {
-        const id = req.params.id;
-        console.log(id)
-        const product = await Product.findById({_id:id});
-        res.status(200).json({data:product,success:true});
-    } catch (error) {
-        res.json({err:error});
-    }
-});
+router.get('/product/:id',getProductByID);
 
-
-router.get('/products/bestseller',async(req,res)=>{
-    try {
-        const data = await Product.find({bestseller:true});
-         res.status(200).json({data,success:true});
-    } catch (error) {
-        
-    }
-})
+router.get('/products/bestseller',bestSeller);
 
 router.post('/product/upload',async (req,res)=>{
 
-})
+});
+
+router.post('/place-order',placeOrder);
+router.get('/get-orders/:id',getUserOrders);
+
+router.post('/add-to-cart',addToCart);
+router.get('/fetchcart/:id',fetchCart);
+router.delete('/deletecart/:id',deletefromCart);
 
 module.exports = router;
 

@@ -9,6 +9,10 @@ const cartSchema = new mongoose.Schema({
   },
   items: [
     {
+      itemId:{
+        type:String,
+        default:Date.now()
+      },
       product: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'Product', 
@@ -16,7 +20,7 @@ const cartSchema = new mongoose.Schema({
       },
       name: String, // Optional: stored for quick access
       image: String,
-      size: { 
+      size: {
         type: String, 
         enum: ['S', 'M', 'L', 'XL', 'XXL'] 
       },
@@ -28,10 +32,6 @@ const cartSchema = new mongoose.Schema({
       price: Number // Price at the time of adding to cart
     }
   ],
-  totalPrice: { 
-    type: Number, 
-    default: 0 
-  },
   updatedAt: { 
     type: Date, 
     default: Date.now 

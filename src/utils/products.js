@@ -631,13 +631,13 @@ const Product = require('../models/Product');
 
 
 async function insertBulk(){
-    const newProducts = products.map((item)=>{
-        const {name,description,price,image,category,subCategory,sizes,date,bestseller} = item;
-        return {name,description,price,image,category,subCategory,sizes,date,bestseller}
-    });
+    // const newProducts = products.map((item)=>{
+    //     const {name,description,price,image,category,subCategory,sizes,date,bestseller} = item;
+    //     return {name,description,price,image,category,subCategory,sizes,date,bestseller}
+    // });
 
-    const response = await Product.insertMany(newProducts);
-    return response;
+    // const response = await Product.insertMany(newProducts);
+    // return response;
 }
 
 module.exports = insertBulk;

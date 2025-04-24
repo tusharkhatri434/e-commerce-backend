@@ -8,9 +8,19 @@ const orderSchema = new mongoose.Schema({
         name: String,
         image: String,      
         quantity: Number,
-        price: Number  
+        price: Number,
       }
     ],
+    address : {
+      firstName:String,
+      LastName:String,
+      email:String,
+      street:String,
+      state:String,
+      city:String,
+      zipCode:String,
+      country:String
+    },
     totalAmount: Number,
     orderStatus: { type: String, default: 'Pending' },
     createdAt: { type: Date, default: Date.now }

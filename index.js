@@ -15,7 +15,7 @@ app.use(express.urlencoded({extended:true}));
 
 app.use('/v1',v1ApiRoutes);
 app.get('/',(req,res)=>{
-  res.send(`<h1>running successfully!👌</h1>`)
+  res.send(`<h1>running successfully!!!👌</h1>`)
 })
 
 
