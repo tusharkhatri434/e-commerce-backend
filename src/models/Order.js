@@ -2,26 +2,36 @@ const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    products: [
+    orderItems: [
       {
         product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
         name: String,
         image: String,      
         quantity: Number,
         price: Number,
+        size:String,
+        Date:{
+          type:Date,
+          default:Date.now()
+        }
       }
     ],
     address : {
       firstName:String,
-      LastName:String,
+      lastName:String,
       email:String,
       street:String,
       state:String,
       city:String,
       zipCode:String,
-      country:String
+      country:String,
+      phone:String
     },
     totalAmount: Number,
+    payment:{
+      type:String,
+      default:"COD"
+    },
     orderStatus: { type: String, default: 'Pending' },
     createdAt: { type: Date, default: Date.now }
   });
@@ -35,4 +45,4 @@ const orderSchema = new mongoose.Schema({
 //   });
   
   const Order = mongoose.model('Order', orderSchema);
-  
+  module.exports = Order;

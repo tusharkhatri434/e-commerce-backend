@@ -25,7 +25,7 @@ const login = async (req,res)=>{
           return res.status(401).json({success:false,msg:'Invalid credentials'});
       }
          const response =  generateToken(user.name,email);
-         res.status(200).json({user:{name:user.name,email},token:response,success:'true'});
+         res.status(200).json({user:{_id:user._id,name:user.name,email},token:response,success:'true'});
     } catch (error) {
         console.log(error);
     }
@@ -46,7 +46,7 @@ const signUp = async (req,res)=>{
         
         const token = generateToken(newUser.name,newUser.email);
 
-       return res.status(201).json({user:{name,email},token,success:"true"});
+       return res.status(201).json({user:{_id:newUser._id,name,email},token,success:"true"});
     } catch (error) {
         console.log(error);
     }

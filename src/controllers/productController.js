@@ -16,7 +16,9 @@ const getAllProducts = async (req,res)=>{
          const id = req.params.id;
          console.log(id)
          const product = await Product.findById({_id:id});
-         res.status(200).json({data:product,success:true});
+         const relatedProducts = await Product.find({category:product.category}).limit(5);
+
+         res.status(200).json({data:{product,relatedProducts},success:true});
      } catch (error) {
          res.json({err:error});
      }

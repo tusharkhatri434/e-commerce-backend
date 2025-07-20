@@ -1,36 +1,38 @@
 const Order = require('../models/Order');
 
 const placeOrder = async (req,res)=>{
-    const {user,products,address} = req.body;
-    // console.log(req.body)
+    const {user,orderItems,address} = req.body;
+    if(!user || !orderItems || !orderItems.length || !address){
+      return res.json({success:false,msg:"Send valid or complete data"});
+    } 
     let totalAmount = 0;
-    const productArray = products.map((item)=>{
+    const orderArray = orderItems.map((item)=>{
        const obj =  {
             product : item._id,
             name : item.name,
             image : item.image[0],
             quantity : item.count,
-            price : item.price
+            price : item.price,
+            size:item.size
           }
          totalAmount = totalAmount + (Number(item.price) * Number(item.count));
         return obj;
     })
 
     const orderData = {
-        user: user._id,
-        products: [...productArray],
+        user:user._id,
+        orderItems: orderArray,
         address,
         totalAmount,
       }
     
-    // console.log(orderData);
     try {
         const newOrder = new Order(orderData);
         await newOrder.save();
-        // console.log(newOrder);
         res.status(200).json({data:newOrder,success:true});
 
     } catch (error) {
+      console.log(error)
        res.json({success:false,err:error});
     }
 };
